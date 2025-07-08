@@ -7,21 +7,55 @@ export abstract class BaseAjaxClient {
 
     constructor() {
     }
-    protected GetHttpDataAsync = async<Req>(fullReqUrl: string, method: Method, reqBody: Req | null,
-        headers: IDictionaryCollection<string, string>, contentType: string): Promise<AxiosResponse> => {
+    // protected GetHttpDataAsync = async<Req>(fullReqUrl: string, method: Method, reqBody: Req | null,
+    //     headers: IDictionaryCollection<string, string>, contentType: string): Promise<AxiosResponse> => {
 
-        if (contentType !== '' && contentType !== 'application/json') {
-            throw new Error('Content Type other then JSON not supported at the moment.');
-        }
-        if (headers == null) { headers = new DictionaryCollection<string, string>(); }
-        headers.Add('Content-Type', contentType);
+    //     if (contentType !== '' && contentType !== 'application/json') {
+    //         throw new Error('Content Type other then JSON not supported at the moment.');
+    //     }
+    //     if (headers == null) { headers = new DictionaryCollection<string, string>(); }
+    //     headers.Add('Content-Type', contentType);
 
-        let reqBodyTxt = '';
-        reqBodyTxt = JSON.stringify(reqBody);
-        let response = await this.FetchAsync(fullReqUrl, method, headers, reqBodyTxt);
-        if (response == null) { throw new Error('Response null after api call. please report the event to administrator.'); }
-        return response;
+    //     let reqBodyTxt = '';
+    //     reqBodyTxt = JSON.stringify(reqBody);
+    //     let response = await this.FetchAsync(fullReqUrl, method, headers, reqBodyTxt);
+    //     if (response == null) { throw new Error('Response null after api call. please report the event to administrator.'); }
+    //     return response;
+    // }
+protected GetHttpDataAsync = async <Req>(
+  fullReqUrl: string,
+  method: Method,
+  reqBody: Req | null,
+  headers: IDictionaryCollection<string, string>,
+  contentType: string
+): Promise<AxiosResponse> => {
+
+  if (contentType !== '' && contentType !== 'application/json') {
+    throw new Error('Content Type other than JSON not supported at the moment.');
+  }
+
+  if (headers == null) {
+    headers = new DictionaryCollection<string, string>();
+  }
+
+  let reqBodyTxt: string | undefined = undefined;
+
+  if (reqBody !== null && reqBody !== undefined) {
+    reqBodyTxt = JSON.stringify(reqBody);
+    headers.Add('Content-Type', contentType);
+  } else {
+    // No body — remove Content-Type
+    if (headers.ContainsKey('Content-Type')) {
+      headers.Remove('Content-Type');
     }
+  }
+
+  const response = await this.FetchAsync(fullReqUrl, method, headers, reqBodyTxt ?? '');
+  if (response == null) {
+    throw new Error('Response null after API call. Please report the event to administrator.');
+  }
+  return response;
+};
 
 
     /**

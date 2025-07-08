@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ComponentLayoutComponent } from './main/components-layout/component-layout.component';
 import { DashboardComponent } from './main/dashboard/dashboard.component';
 import { WebsiteResourcesComponent } from './main/website-resources/website-resources.component';
+import { LicencesComponent } from './main/licences/licences.component';
 const routes: Routes = [
   {
     path: '',
@@ -11,7 +12,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'website-resources', component: WebsiteResourcesComponent }
+      { path: 'website-resources', component: WebsiteResourcesComponent },
+      {path:'licenses',component:LicencesComponent}
     ]
   }
 ];

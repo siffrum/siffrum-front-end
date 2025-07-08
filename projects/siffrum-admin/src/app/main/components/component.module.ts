@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
-import { ComponentRoutingModule } from './auth-routing.module';
+import { ComponentRoutingModule } from './component-routing.module';
 import { TopNavComponent } from './internal/top-nav/top-nav.component';
 import { SideNavComponent } from './internal/side-nav/side-nav.component';
 

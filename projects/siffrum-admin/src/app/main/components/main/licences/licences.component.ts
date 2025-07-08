@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { LicenseViewModel } from '../../../../models/view/licenses/license.viewmodel';
 import { BaseComponent } from '../../../../base.component';
-import { BannerViewModel } from '../../../../models/view/website-resource/banner.viewmodel';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonService } from '../../../../services/common.service';
 import { LogHandlerService } from '../../../../services/log-handler.service';
-import { BannerService } from '../../../../services/banner.service';
+import { LicenseService } from '../../../../services/license.service';
+import { CommonModule } from '@angular/common';
 import { PaginationComponent } from '../../internal/pagination/pagination.component';
 
 @Component({
-  selector: 'app-website-resources',
+  selector: 'app-licences',
   imports: [CommonModule, ReactiveFormsModule,PaginationComponent],
-  templateUrl: './website-resources.component.html',
-  styleUrl: './website-resources.component.scss',
+  templateUrl: './licences.component.html',
+  styleUrl: './licences.component.scss'
 })
-export class WebsiteResourcesComponent
-  extends BaseComponent<BannerViewModel>
+export class LicencesComponent extends BaseComponent<LicenseViewModel>
   implements OnInit
 {
   protected _logHandler: LogHandlerService;
@@ -24,11 +23,11 @@ export class WebsiteResourcesComponent
     private fb: FormBuilder,
     commonService: CommonService,
     logHandler: LogHandlerService,
-    private bannerService: BannerService
+    private LicenseService: LicenseService
   ) {
     super(commonService, logHandler);
     this._logHandler = logHandler;
-    this.viewModel = new BannerViewModel();
+    this.viewModel = new LicenseViewModel();
   }
 
   ngOnInit(): void {
@@ -40,7 +39,7 @@ export class WebsiteResourcesComponent
     try {
       this._commonService.presentLoading();
       await this.getTotalCount();
-      let resp = await this.bannerService.getAllBanners(this.viewModel);
+      let resp = await this.LicenseService.getAllLicenses(this.viewModel);
       if (resp.isError) {
         await this._logHandler.logObject(resp.errorData);
         this._commonService.showSweetAlertToast({
@@ -50,8 +49,8 @@ export class WebsiteResourcesComponent
           confirmButtonText: 'OK',
         });
       } else {
-        this.viewModel.bannerSMList = resp.successData;
-        console.log('Banners loaded:', this.viewModel.bannerSMList);
+        this.viewModel.licenseSMList = resp.successData;
+        console.log('Licenses loaded:', this.viewModel.licenseSMList);
 
         // this.viewModel.pagination.totalCount = resp.totalCount;
       }
@@ -64,7 +63,7 @@ export class WebsiteResourcesComponent
    async getTotalCount(): Promise<void> {
     try {
       this._commonService.presentLoading();
-      let resp = await this.bannerService.getTotatBannersCount();
+      let resp = await this.LicenseService.getTotatLicensesCount();
       if (resp.isError) {
         await this._logHandler.logObject(resp.errorData);
         this._commonService.showSweetAlertToast({
@@ -74,10 +73,10 @@ export class WebsiteResourcesComponent
           confirmButtonText: 'OK',
         });
       } else {
-        console.log('Banners loaded:',resp.successData);
+        console.log('Licenses loaded:',resp.successData);
         let count =resp.successData
         this.viewModel.pagination.totalCount = count;
-        // alert(`Total Banners Count: ${resp.successData}`);
+        // alert(`Total Licenses Count: ${resp.successData}`);
 
         // this.viewModel.pagination.totalCount = resp.totalCount;
       }
@@ -96,54 +95,34 @@ export class WebsiteResourcesComponent
       await this.loadPageData();
     }
   }
-  initForm(): void {
-    this.viewModel.bannerForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['',Validators.required],
-      imageBase64: ['',Validators.required],
-      link: ['',],
-      ctaText: ['',],
-      bannerType: ['Slider', ],
-      isVisible: [true],
-    });
-  }
-
-   onImageSelected(event: any): void {
-    const file: File = event.target.files[0];
-    if (file) {
-        if (file.size > 1 * 1024 * 1024) { // 1 MB limit
-    alert('Image is too large. Max size is 1MB.');
-    return;
-  }
-      this._commonService.convertFileToBase64(file).subscribe((base64: string) => {
-        this.viewModel.bannerForm.get('imageBase64')?.setValue(base64);
-        console.log('Base64 image:', base64); // optional
-      });
-    }
-  }
-
-onDebugClick(event: Event): void {
-  console.log('Debug click fired!');
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    console.log('Selected file:', file.name);
-  }
+ initForm(): void {
+  this.viewModel.licenseForm = this.fb.group({
+    name: ['', Validators.required],
+    description: [''],
+    price: [0.0, [Validators.required, Validators.min(0)]],
+    validity: [1, [Validators.required, Validators.min(1)]],
+    role: ['VendorLicense', Validators.required],
+    isActive: [true],
+    createdBy: [null],
+    lastModifiedBy: [null],
+  });
 }
+
   onToggleVisibility() {
-    const current = this.viewModel.bannerForm.get('isVisible')?.value;
+    const current = this.viewModel.licenseForm.get('isActive')?.value;
     console.log('Checkbox toggled, new value:', current);
   }
   openAddModal(): void {
-    this.viewModel.bannerForm.reset({
-      bannerType: 'Slider',
-      isVisible: true,
+    this.viewModel.licenseForm.reset({
+      LicenseType: 'VendorLicense',
+      isActive: true,
     });
     this.viewModel.showAddModal = true;
   }
 
-  openEditModal(bannerId: number): void {
+  openEditModal(LicenseId: number): void {
   // Ensure ID is set for edit
-    this.getBannerById(bannerId);
+    this.getLicenseById(LicenseId);
     this.viewModel.showEditModal = true;
   }
 
@@ -161,9 +140,9 @@ onDebugClick(event: Event): void {
   async addItem(): Promise<void> {
     try {
       this._commonService.presentLoading();
-      if (this.viewModel.bannerForm.valid) {
-        const newBanner = this.viewModel.bannerForm.value;
-        let resp = await this.bannerService.addBanner(newBanner);
+      if (this.viewModel.licenseForm.valid) {
+        const newLicense = this.viewModel.licenseForm.value;
+        let resp = await this.LicenseService.addLicense(newLicense);
         if (resp.isError) {
           this._commonService.showSweetAlertToast({
             title: 'Error',
@@ -174,11 +153,11 @@ onDebugClick(event: Event): void {
         } else {
           this._commonService.showSweetAlertToast({
             title: 'Success',
-            text: 'Banner added successfully',
+            text: 'License added successfully',
             icon: 'success',
             confirmButtonText: 'OK',
           });
-          this.viewModel.bannerSM = resp.successData;
+          this.viewModel.licenseSM = resp.successData;
           this.loadPageData();
           this.closeAddModal();
         }
@@ -193,11 +172,11 @@ onDebugClick(event: Event): void {
   async updateItem() {
     try {
       this._commonService.presentLoading();
-      if (this.viewModel.bannerForm.valid) {
-        this.viewModel.bannerSM = this.viewModel.bannerForm.value;
-        this.viewModel.bannerSM.id=this.viewModel.bannerId;  // Ensure ID is set for update
-        let resp = await this.bannerService.updateBanner(
-          this.viewModel.bannerSM
+      if (this.viewModel.licenseForm.valid) {
+        this.viewModel.licenseSM = this.viewModel.licenseForm.value;
+        this.viewModel.licenseSM.id=this.viewModel.licenseId;  // Ensure ID is set for update
+        let resp = await this.LicenseService.updateLicense(
+          this.viewModel.licenseSM
         );
         if (resp.isError) {
           this._commonService.showSweetAlertToast({
@@ -209,11 +188,11 @@ onDebugClick(event: Event): void {
         } else {
           this._commonService.showSweetAlertToast({
             title: 'Success',
-            text: 'Banner updated successfully',
+            text: 'License updated successfully',
             icon: 'success',
             confirmButtonText: 'OK',
           });
-          this.viewModel.bannerSM = resp.successData;
+          this.viewModel.licenseSM = resp.successData;
           this.loadPageData();
           this.closeAddModal();
         }
@@ -225,10 +204,10 @@ onDebugClick(event: Event): void {
     }
   }
 
-  async deleteItem(bannerId: number) {
+  async deleteItem(LicenseId: number) {
     try {
       this._commonService.presentLoading();
-        let resp = await this.bannerService.deleteBanner(bannerId);
+        let resp = await this.LicenseService.deleteLicense(LicenseId);
         if (resp.isError) {
           this._commonService.showSweetAlertToast({
             title: 'Error',
@@ -239,12 +218,12 @@ onDebugClick(event: Event): void {
         } else {
           this._commonService.showSweetAlertToast({
             title: 'Success',
-            text: 'Banner Deleted successfully',
+            text: 'License Deleted successfully',
             icon: 'success',
             confirmButtonText: 'OK',
           });
-          //  this.viewModel.bannerSM=resp.successData;
-          this.loadPageData()
+          //  this.viewModel.LicenseSM=resp.successData;
+          this.loadPageData();
         }
       }
    catch (error) {
@@ -254,10 +233,10 @@ onDebugClick(event: Event): void {
     }
   }
 
-  async getBannerById(bannerId: number) {
+  async getLicenseById(LicenseId: number) {
     try {
       this._commonService.presentLoading();
-        let resp = await this.bannerService.getBannerById(bannerId);
+        let resp = await this.LicenseService.getLicenseById(LicenseId);
         if (resp.isError) {
           this._commonService.showSweetAlertToast({
             title: 'Error',
@@ -266,10 +245,10 @@ onDebugClick(event: Event): void {
             confirmButtonText: 'OK',
           });
         } else {
-          this.viewModel.bannerSM = resp.successData;
-          this.viewModel.bannerId=this.viewModel.bannerSM.id;
-          console.log('Banner loaded:', this.viewModel.bannerSM);
-          this.viewModel.bannerForm.patchValue(this.viewModel.bannerSM);
+          this.viewModel.licenseSM = resp.successData;
+          this.viewModel.licenseId=this.viewModel.licenseSM.id;
+          console.log('License loaded:', this.viewModel.licenseSM);
+          this.viewModel.licenseForm.patchValue(this.viewModel.licenseSM);
       }
     } catch (error) {
       throw error;

@@ -6,14 +6,14 @@ import { StorageCache } from './helpers/storage-cache.helper';
 import { ApiResponse } from '../models/service-models/foundation/api-contracts/base/api-response';
 import { ApiRequest } from '../models/service-models/foundation/api-contracts/base/api-request';
 import { DeleteResponseRoot } from '../models/service-models/foundation/common-response/delete-response-root';
-import { BrandSM } from '../models/service-models/app/v1/brand-s-m';
 import { QueryFilter } from '../models/service-models/foundation/api-contracts/query-filter';
 import { IntResponseRoot } from '../models/service-models/foundation/common-response/int-response-root';
 import { AppConstants } from '../../app-constants';
+import { LicenseSM } from '../models/service-models/app/v1/license-s-m';
 @Injectable({
   providedIn: 'root',
 })
-export class brandClient extends BaseApiClient {
+export class LicenseClient extends BaseApiClient {
   constructor(
     storageService: StorageService,
     storageCache: StorageCache,
@@ -21,44 +21,44 @@ export class brandClient extends BaseApiClient {
   ) {
     super(storageService, storageCache, commonResponseCodeHandler);
   }
-  GetAllLicenses = async (queryFilter:QueryFilter): Promise<ApiResponse<BrandSM[]>> => {
-    let resp = await this.GetResponseAsync<null, BrandSM[]>(`${AppConstants.ApiUrls.LICENSE}?skip=${queryFilter.skip}&top=${queryFilter.top}`, 'GET');
+  GetAllLicenses = async (queryFilter:QueryFilter): Promise<ApiResponse<LicenseSM[]>> => {
+    let resp = await this.GetResponseAsync<null, LicenseSM[]>(`${AppConstants.ApiUrls.LICENSE}/getall?skip=${queryFilter.skip}&top=${queryFilter.top}`, 'GET');
     return resp;
   };
 
-  GetTotatLicenseCount = async (): Promise<ApiResponse<IntResponseRoot>> => {
-    let resp = await this.GetResponseAsync<null, IntResponseRoot>(
-      `${AppConstants.ApiUrls.LOG_URL}/count`,
+  GetTotatLicenseCount = async (): Promise<ApiResponse<number>> => {
+    let resp = await this.GetResponseAsync<null, number>(
+      `${AppConstants.ApiUrls.LICENSE}/count`,
       'GET'
     );
     return resp;
     }
 
-      AddLicense= async (
-    addBrand: ApiRequest<BrandSM>
-  ): Promise<ApiResponse<BrandSM>> => {
-    let resp = await this.GetResponseAsync<BrandSM, BrandSM>(
-      `${AppConstants.ApiUrls.LOG_URL}`,
+ AddLicense= async (
+    addLicense: ApiRequest<LicenseSM>
+  ): Promise<ApiResponse<LicenseSM>> => {
+    let resp = await this.GetResponseAsync<LicenseSM, LicenseSM>(
+      `${AppConstants.ApiUrls.LICENSE}/create`,
       'POST',
-      addBrand
+      addLicense
     );
     return resp;
   };
 
-  /**delete brand by id */
-  DeleteBrandById = async (
+  /**delete License by id */
+  DeleteLicenseById = async (
     Id: number
   ): Promise<ApiResponse<DeleteResponseRoot>> => {
     let resp = await this.GetResponseAsync<number, DeleteResponseRoot>(
-      `${AppConstants.ApiUrls.LOG_URL}/${Id}`,
+      `${AppConstants.ApiUrls.LICENSE}/delete/${Id}`,
       'DELETE'
     );
     return resp;
   };
 
-  GetBrandById = async (Id: number): Promise<ApiResponse<BrandSM>> => {
-    let resp = await this.GetResponseAsync<number, BrandSM>(
-      `${AppConstants.ApiUrls.LOG_URL}/${Id}`,
+  GetLicenseById = async (Id: number): Promise<ApiResponse<LicenseSM>> => {
+    let resp = await this.GetResponseAsync<number, LicenseSM>(
+      `${AppConstants.ApiUrls.LICENSE}/getbyid/${Id}`,
       'GET'
     );
     return resp;
@@ -67,21 +67,21 @@ export class brandClient extends BaseApiClient {
 
 
   /**
-   * Update existing brand
+   * Update existing License
    * 
-   * @param updateBrand Brand data to update
-   * @returns Promise<ApiResponse<BrandSM>>
+   * @param updateLicense License data to update
+   * @returns Promise<ApiResponse<LicenseSM>>
    * @example
-   * const updatedBrand = new BrandSM();
+   * const updatedLicense = new LicenseSM();
   
    */
-  UpdateBrand = async (
-    updateBrand: ApiRequest<BrandSM>
-  ): Promise<ApiResponse<BrandSM>> => {
-    let resp = await this.GetResponseAsync<BrandSM, BrandSM>(
-      `${AppConstants.ApiUrls.LOG_URL}/${updateBrand.reqData.id}`,
+  UpdateLicense = async (
+    updateLicense: ApiRequest<LicenseSM>
+  ): Promise<ApiResponse<LicenseSM>> => {
+    let resp = await this.GetResponseAsync<LicenseSM, LicenseSM>(
+      `${AppConstants.ApiUrls.LICENSE}/update/${updateLicense.reqData.id}`,
       'PUT',
-      updateBrand
+      updateLicense
     );
     return resp;
   };

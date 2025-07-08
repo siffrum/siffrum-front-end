@@ -7,7 +7,7 @@ export const AppConstants =
         TEST_URL: 'test/test',
         REGISTER_URL: 'api/v1/register',
         LOG_URL: 'api/v1/login',
-        LICENSE: 'api/v1/License',
+        LICENSE: 'api/v1/license',
         Banner: 'api/v1/banner',
         ACCOUNT_URL: 'api/token',
         DUMMY_TEACHER_URL: 'api/DummyTeacher',

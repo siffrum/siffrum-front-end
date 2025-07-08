@@ -61,9 +61,21 @@ export abstract class BaseApiClient extends BaseAjaxClient {
                 else if (reqMethod === 'DELETE') {
                     // validations
                 }
+let actualBody = reqBody;
 
-                axiosResp = await this.GetHttpDataAsync<ApiRequest<InReq>>(
-                    fullUrlToHit, reqMethod, reqBody, additionalRequestDetails.headers, additionalRequestDetails.contentType);
+if (reqMethod === 'DELETE' && !reqBody) {
+    actualBody = null;
+    // Remove Content-Type header if it exists
+    if (additionalRequestDetails.headers?.ContainsKey('Content-Type')) {
+        additionalRequestDetails.headers.Remove('Content-Type');
+    }
+}
+
+axiosResp = await this.GetHttpDataAsync<ApiRequest<InReq>>(
+    fullUrlToHit, reqMethod, actualBody, additionalRequestDetails.headers, additionalRequestDetails.contentType);
+
+                // axiosResp = await this.GetHttpDataAsync<ApiRequest<InReq>>(
+                //     fullUrlToHit, reqMethod, reqBody, additionalRequestDetails.headers, additionalRequestDetails.contentType);
 
                 if (this.commonResponseCodeHandler.handlerDict.Keys().includes(axiosResp.status.toString())) {
                     let errMessage = this.commonResponseCodeHandler.handlerDict.Item(axiosResp.status.toString())(axiosResp)
