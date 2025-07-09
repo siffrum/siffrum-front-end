@@ -1,6 +1,6 @@
-import { SIMSServiceModelBase } from "../base/sims-service-model-base";
+import { SiffrumServiceModelBase } from "../../base/siffrum-service-model-base";
 
-export class LicenseSM extends SIMSServiceModelBase<number> {
+export class LicenseSM extends SiffrumServiceModelBase<number> {
   name!: string;
   description?: string;
   price!: number;

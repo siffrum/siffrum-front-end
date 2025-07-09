@@ -1,6 +1,6 @@
-import { SIMSServiceModelBase } from '../../base/sims-service-model-base';
+import { SiffrumServiceModelBase } from '../../base/siffrum-service-model-base';
 
-export class BannerSM extends SIMSServiceModelBase<number> {
+export class BannerSM extends SiffrumServiceModelBase<number> {
   title!: string;
   description!: string;
   imageBase64!: string;

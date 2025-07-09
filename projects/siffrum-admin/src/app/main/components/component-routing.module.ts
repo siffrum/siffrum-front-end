@@ -5,6 +5,7 @@ import { ComponentLayoutComponent } from './main/components-layout/component-lay
 import { DashboardComponent } from './main/dashboard/dashboard.component';
 import { WebsiteResourcesComponent } from './main/website-resources/website-resources.component';
 import { LicencesComponent } from './main/licences/licences.component';
+import { ModulesComponent } from './main/modules/modules.component';
 const routes: Routes = [
   {
     path: '',
@@ -13,7 +14,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'website-resources', component: WebsiteResourcesComponent },
-      {path:'licenses',component:LicencesComponent}
+      {path:'licenses',component:LicencesComponent},
+      {path:'modules',component:ModulesComponent}
     ]
   }
 ];

@@ -1,6 +1,6 @@
-import { SIMSServiceModelBase } from "../../../base/sims-service-model-base";
+import { SiffrumServiceModelBase } from "../../../base/siffrum-service-model-base";
 
-export class SignUpSM extends SIMSServiceModelBase<number> {
+export class SignUpSM extends SiffrumServiceModelBase<number> {
     loginId!: string;
     firstName!: string;
     lastName!: string;

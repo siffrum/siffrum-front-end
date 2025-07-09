@@ -1,6 +1,6 @@
-import { SIMSServiceModelBase } from '../base/sims-service-model-base';
+import { SiffrumServiceModelBase } from '../base/siffrum-service-model-base';
 
-export class DummySubjectSM extends SIMSServiceModelBase<number> {
+export class DummySubjectSM extends SiffrumServiceModelBase<number> {
   subjectName!: string;
   subjectCode!: string;
   dummyTeacherID?: number;

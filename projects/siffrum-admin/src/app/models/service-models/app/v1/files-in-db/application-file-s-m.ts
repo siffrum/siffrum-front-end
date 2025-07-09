@@ -1,7 +1,7 @@
-import { SIMSServiceModelBase } from "../../base/sims-service-model-base";
+import { SiffrumServiceModelBase } from "../../base/siffrum-service-model-base";
 
 
-export class ApplicationFileSM extends SIMSServiceModelBase<number> {
+export class ApplicationFileSM extends SiffrumServiceModelBase<number> {
     fileName!: string;
     fileType!: string;
     fileDescription!: string;

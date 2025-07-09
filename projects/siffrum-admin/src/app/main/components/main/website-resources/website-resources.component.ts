@@ -10,9 +10,10 @@ import { PaginationComponent } from '../../internal/pagination/pagination.compon
 
 @Component({
   selector: 'app-website-resources',
-  imports: [CommonModule, ReactiveFormsModule,PaginationComponent],
+  imports: [CommonModule, ReactiveFormsModule, PaginationComponent],
   templateUrl: './website-resources.component.html',
   styleUrl: './website-resources.component.scss',
+  providers: [BannerService]
 })
 export class WebsiteResourcesComponent
   extends BaseComponent<BannerViewModel>
@@ -51,7 +52,7 @@ export class WebsiteResourcesComponent
         });
       } else {
         this.viewModel.bannerSMList = resp.successData;
-        console.log('Banners loaded:', this.viewModel.bannerSMList);
+        // console.log('Banners loaded:', this.viewModel.bannerSMList);
 
         // this.viewModel.pagination.totalCount = resp.totalCount;
       }
@@ -74,7 +75,7 @@ export class WebsiteResourcesComponent
           confirmButtonText: 'OK',
         });
       } else {
-        console.log('Banners loaded:',resp.successData);
+        // console.log('Banners loaded:',resp.successData);
         let count =resp.successData
         this.viewModel.pagination.totalCount = count;
         // alert(`Total Banners Count: ${resp.successData}`);
@@ -117,21 +118,14 @@ export class WebsiteResourcesComponent
   }
       this._commonService.convertFileToBase64(file).subscribe((base64: string) => {
         this.viewModel.bannerForm.get('imageBase64')?.setValue(base64);
-        console.log('Base64 image:', base64); // optional
+        // console.log('Base64 image:', base64); // optional
       });
     }
   }
 
-onDebugClick(event: Event): void {
-  console.log('Debug click fired!');
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    console.log('Selected file:', file.name);
-  }
-}
   onToggleVisibility() {
     const current = this.viewModel.bannerForm.get('isVisible')?.value;
-    console.log('Checkbox toggled, new value:', current);
+    // console.log('Checkbox toggled, new value:', current);
   }
   openAddModal(): void {
     this.viewModel.bannerForm.reset({
@@ -268,7 +262,7 @@ onDebugClick(event: Event): void {
         } else {
           this.viewModel.bannerSM = resp.successData;
           this.viewModel.bannerId=this.viewModel.bannerSM.id;
-          console.log('Banner loaded:', this.viewModel.bannerSM);
+          // console.log('Banner loaded:', this.viewModel.bannerSM);
           this.viewModel.bannerForm.patchValue(this.viewModel.bannerSM);
       }
     } catch (error) {

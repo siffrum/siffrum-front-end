@@ -5,7 +5,7 @@ import { DeleteResponseRoot } from '../models/service-models/foundation/common-r
 import { ApiRequest } from '../models/service-models/foundation/api-contracts/base/api-request';
 import { QueryFilter } from '../models/service-models/foundation/api-contracts/query-filter';
 import { AppConstants } from '../../app-constants';
-import { LicenseSM } from '../models/service-models/app/v1/license-s-m';
+import { LicenseSM } from '../models/service-models/app/v1/licenses/license-s-m';
 import { LicenseViewModel } from '../models/view/licenses/license.viewmodel';
 import { LicenseClient } from '../clients/license.client';
 

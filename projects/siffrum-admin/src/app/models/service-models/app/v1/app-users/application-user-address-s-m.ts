@@ -1,6 +1,6 @@
-import { simsServiceModelBase } from '../../base/sims-service-model-base';
+import { SiffrumServiceModelBase } from '../../base/siffrum-service-model-base';
 
-export class ApplicationUserAddressSM extends simsServiceModelBase<number> {
+export class ApplicationUserAddressSM extends SiffrumServiceModelBase<number> {
     country!: string;
     state!: string;
     city!: string;

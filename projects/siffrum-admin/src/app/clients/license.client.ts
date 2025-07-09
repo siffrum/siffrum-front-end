@@ -9,7 +9,7 @@ import { DeleteResponseRoot } from '../models/service-models/foundation/common-r
 import { QueryFilter } from '../models/service-models/foundation/api-contracts/query-filter';
 import { IntResponseRoot } from '../models/service-models/foundation/common-response/int-response-root';
 import { AppConstants } from '../../app-constants';
-import { LicenseSM } from '../models/service-models/app/v1/license-s-m';
+import { LicenseSM } from '../models/service-models/app/v1/licenses/license-s-m';
 @Injectable({
   providedIn: 'root',
 })
@@ -21,10 +21,20 @@ export class LicenseClient extends BaseApiClient {
   ) {
     super(storageService, storageCache, commonResponseCodeHandler);
   }
+  /**
+   * @dev Musaib
+   * Retrieves all licenses with pagination.
+   * @param queryFilter - The filter for pagination (skip and top).
+   * @returns A promise that resolves to an ApiResponse containing an array of LicenseSM objects.
+   */
   GetAllLicenses = async (queryFilter:QueryFilter): Promise<ApiResponse<LicenseSM[]>> => {
     let resp = await this.GetResponseAsync<null, LicenseSM[]>(`${AppConstants.ApiUrls.LICENSE}/getall?skip=${queryFilter.skip}&top=${queryFilter.top}`, 'GET');
     return resp;
   };
+  /**
+   * Retrieves the total count of licenses.
+   * @returns A promise that resolves to an ApiResponse containing the total count of licenses.
+   */
 
   GetTotatLicenseCount = async (): Promise<ApiResponse<number>> => {
     let resp = await this.GetResponseAsync<null, number>(
@@ -33,6 +43,12 @@ export class LicenseClient extends BaseApiClient {
     );
     return resp;
     }
+
+  /** * Adds a new License.
+   * @dev Musaib  
+   * @param addLicense - The License data to add.
+   * @return A promise that resolves to an ApiResponse containing the added LicenseSM object.
+   * */
 
  AddLicense= async (
     addLicense: ApiRequest<LicenseSM>
@@ -44,8 +60,12 @@ export class LicenseClient extends BaseApiClient {
     );
     return resp;
   };
-
-  /**delete License by id */
+  /**
+   * Deletes a License by its ID.
+   * @dev Musaib
+   * @param Id - The ID of the License to delete.
+   * @returns A promise that resolves to an ApiResponse containing the result of the deletion.
+   */
   DeleteLicenseById = async (
     Id: number
   ): Promise<ApiResponse<DeleteResponseRoot>> => {
@@ -56,6 +76,12 @@ export class LicenseClient extends BaseApiClient {
     return resp;
   };
 
+  /**
+   * Retrieves a License by its ID.
+   * @dev Musaib
+   * @param Id - The ID of the License to retrieve.
+   * @returns A promise that resolves to an ApiResponse containing the LicenseSM object.
+   */ 
   GetLicenseById = async (Id: number): Promise<ApiResponse<LicenseSM>> => {
     let resp = await this.GetResponseAsync<number, LicenseSM>(
       `${AppConstants.ApiUrls.LICENSE}/getbyid/${Id}`,

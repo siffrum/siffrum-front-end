@@ -1,0 +1,70 @@
+
+<!-- Button -->
+<button class="btn btn-success mb-2" (click)="openAddModal()">Add New Module</button>
+
+<!-- Table -->
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of viewModel.moduleSMList; let i = index">
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary me-1" (click)="openEditModal(item.id)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteItem(item.id)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="viewModel.moduleSMList.length === 0">
+        <td colspan="4" class="text-center">No modules available.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination (Optional) -->
+  <div class="col-12 d-flex justify-content-center pt-1"
+    *ngIf="viewModel.pagination && viewModel.pagination.totalCount > 0">
+    <pagination (selectedPageNum)="loadPagedataWithPagination($event)" [viewModel]="viewModel.pagination">
+    </pagination>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-backdrop" *ngIf="viewModel.showAddModal || viewModel.showEditModal">
+  <div class="modal-box">
+    <form [formGroup]="viewModel.moduleForm">
+      <div class="modal-header">
+        <h2>{{ viewModel.showAddModal ? 'Add Module' : 'Edit Module' }}</h2>
+        <button type="button" class="close-btn" (click)="viewModel.showAddModal ? closeAddModal() : closeEditModal()">
+          ×
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <label>Name</label>
+        <input type="text" formControlName="name" />
+
+        <label>Description</label>
+        <textarea formControlName="description"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="cancel" (click)="viewModel.showAddModal ? closeAddModal() : closeEditModal()">
+          Cancel
+        </button>
+        <button type="button" class="save" (click)="viewModel.showAddModal ? addItem() : updateItem()"
+          [disabled]="viewModel.moduleForm.invalid">
+          {{ viewModel.showAddModal ? 'Add' : 'Update' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
